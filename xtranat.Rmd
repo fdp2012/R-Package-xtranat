@@ -1,0 +1,139 @@
+---
+title: "xtranat"
+subtitle: "Application of Network Analysis Techniques to Input-Output Economic Systems"
+author:
+- name: "Fernando DePaolis(*)"
+  affiliation: . [Middlebury Institute of International Studies](http://www.miis.edu/) [CBE]( http://centerfortheblueeconomy.org/)
+- name: "Phil Murphy"
+  affiliation: . [Middlebury Institute of International Studies](http://www.miis.edu/) [META Lab](http://sites.miis.edu/metalab/)
+- name: "M. Clara DePaolis Kaluza"
+  affiliation: Northeastern University, College of Computer and Information Science
+date: "March, 2018"
+output:
+  html_document:
+    fig_height: 6
+    theme: spacelab
+    toc: yes
+    toc_depth: 4
+vignette: >
+  %\VignetteIndexEntry{xtranat}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\usepackage[utf8]{inputenc}
+abstract: "These script chunks are part of the 'xtranat' package. They compute 'Counting Betweenness' and 'Random Walk Centrality' from Input-Output data from IMPLAN(R). It also computes the intermediate measure 'Mean First Pass Time'. The scripts have been developed for R from the MatLab code in Blöchl et al (2011)."
+keywords: "Input-Output system; Regional Economies; Multiplier effects"
+
+geometry: margin=1in
+fontfamily: mathpazo
+fontsize: 11pt
+---
+
+<div style="text-align: right;>(*) Corresponding author: Fernando DePaolis [fdepaolis@middlebury.edu]</div>
+
+#### Mean First Pass Time
+
+```{r}
+mfpt <- function(A) {
+        A <- as.matrix(A)  ## IO coeffs, or dollar values?
+        n = nrow(A) ## total number of sectors (20, 86 or 536)
+        rrss = rowSums(A)
+        for (i in 1:n) {
+                if (rrss[i] != 0) {
+                        rrss[i] = 1/rrss[i]
+                }
+        }
+        AA = diag(n) - diag(rrss) %*% A  #compute transition matrix. Is this "T" in 'mediative effects' Garcia-Muniz 2008?
+        H = matrix(0, n, n)
+        I = solve(AA[-1,-1])            ## inverse of AA without 1st column & 1st row
+        ones = matrix(1, n-1, 1)        ## vector of "1"s of length 'n-1'
+        for (i in 1:n) {
+                H[-i,i] = I %*% ones    ## matrix product; otherwise, non-conformable
+                if (i < n){
+                        u = AA[-(i+1),i] - AA[-i, (i+1)]
+                        I = I - ((I*u) * I[i,]) / (1 + (I[i,] * u))
+                        v = AA[i, -(i+1)] - AA[(i+1), -i]
+                        I = I - ((I[,i] * (v * I)) / 1 + v * I[,i])
+                        if (AA[(i+1),(i+1)]!=1){
+                                I = solve(AA[-(i+1),-(i+1)], tol = 1e-29)
+                        }
+                        if (any(is.infinite(I))) {        ## i.e. Sherman-Morrison didn't work. When would I(i,j)=infinity
+                                I[is.infinite(I)] <- 0
+                        }
+                }
+        }
+        H <<- H
+}
+
+```
+<div style="text-align: right;" markdown="1"><a href="#header">back to top</a></div>
+
+#### Counting Betweenness
+```{r}
+cbet <- function(A) {
+        ## Reads the A-matrix; removes row/column with zeros; records their row/column number
+        A <- as.matrix(A)
+        m = nrow(A)
+        rrss = rowSums(A)
+        retain.vector <- vector(mode="numeric", length=0)
+        if (0.0 %in% rrss){    ## Checks if there is a row with all zeros
+          retain.vector <- row(as.matrix(rrss))[which(as.matrix(rrss) == 0)]
+          AA1 = A[-retain.vector,-retain.vector]  ## this is the A-matrix without row/columns of zeros
+        } else {
+          AA1 = A
+        }
+
+        d = diag(rowSums(AA1))
+        n = nrow(AA1)
+        ones = matrix(1, n, 1) ## this is a vector of "n" rows by 1 col of "1"
+        re = matrix(0, n, 1 )  ## this is a vector of "n" rows by 1 col of "0"
+        for (p in 1:n){
+                atemp = AA1[-p,-p]
+                T = solve(d[-p,-p] - atemp, tol = 1e-29)
+                for (s in 1:n){
+                        if (s != p){
+                                if (s < p){
+                                    indx = s
+                                } else if (s > p) {
+                                    indx = s - 1
+                                }
+                        N = as.matrix(diag(T[indx,])) %*% atemp
+                        I = abs(N + t(N)) / 2
+                        re[-p,1] = re[-p,1] + 0.5*((t(colSums(I))) + rowSums(I))
+                        }
+                }
+        }
+        re2 = (re + 2 * (n-1) * ones) / ((n) * (n-1))
+
+        res = matrix(0, m, 1)
+        # restore one or more rows/columns of zeros to their original positions
+        if (length(retain.vector)!=0) {
+          res[-retain.vector] <- re2
+        } else
+          res <- re2
+
+        res <<- res
+}
+````
+<div style="text-align: right;" markdown="1"><a href="#header">back to top</a></div>
+
+#### Random Walk Centrality
+```{r}
+rwc <- function(A) {
+        nn = nrow(A)
+        cen = matrix(0,nn,1)
+        m <- mfpt(A)   # H from mfpt{}
+        for (j in 1:nn) {
+                if (all(H[j,] == (c(rep(1,(j-1)),0,rep(1,(nn-j)))))) {  # This compares each row of H with a rows made of 1s and a zero on the diagonal
+                        cen[j] = 0   # If TRUE (i.e. row of H == 1s) that row of CEN == zero
+                } else {
+                        cen[j] = nn / sum(m[,j])
+                }
+        }
+        cen <<- cen
+}
+````
+<div style="text-align: right;" markdown="1"><a href="#header">back to top</a></div>
+
+### Closing Comments
+Based on Blöchl F, Theis FJ, Vega-Redondo F, and Fisher E: Vertex Centralities in Input-Output Networks Reveal the Structure of Modern Economies, Physical Review E, 83(4):046127, 2011.[Link](https://journals.aps.org/pre/abstract/10.1103/PhysRevE.83.046127)
+
+<div style="text-align: right;" markdown="1"><a href="#header">back to top</a></div>
