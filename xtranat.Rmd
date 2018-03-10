@@ -29,6 +29,10 @@ fontsize: 11pt
 
 <div style="text-align: right;>(*) Corresponding author: Fernando DePaolis [fdepaolis@middlebury.edu]</div>
 
+<div style="text-align: right;" markdown="1"><a href="#header">back to top</a></div>
+```{r}
+```
+
 #### Mean First Pass Time
 ```{r}
 mfpt <- function(A) {
