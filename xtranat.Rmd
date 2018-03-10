@@ -30,7 +30,6 @@ fontsize: 11pt
 <div style="text-align: right;>(*) Corresponding author: Fernando DePaolis [fdepaolis@middlebury.edu]</div>
 
 #### Mean First Pass Time
-
 ```{r}
 mfpt <- function(A) {
         A <- as.matrix(A)  ## IO coeffs, or dollar values?
