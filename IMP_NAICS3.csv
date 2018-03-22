@@ -1,0 +1,87 @@
+Code86,Description86,SectorID86
+1,Crop Farming,1
+2,Livestock,11
+3,Forestry & Logging,15
+4,Fishing- Hunting & Trapping,17
+5,Ag & Forestry Svcs,19
+6,Oil & gas extraction,20
+7,Mining,22
+8,Mining services,37
+9,Utilities,41
+10,Construction,52
+11,Food products,65
+12,Beverage & Tobacco,106
+13,Textile Mills,112
+14,Textile Products,124
+15,Leather & Allied,131
+16,Wood Products,134
+17,Paper Manufacturing,146
+18,Printing & Related,154
+19,Petroleum & coal prod,156
+20,Chemical Manufacturing,161
+21,Plastics & rubber prod,188
+22,Nonmetal mineral prod,199
+23,Primary metal mfg,217
+24,Fabricated metal prod,231
+25,Machinery Mfg,262
+26,Computer & oth electron,301
+27,Electircal eqpt & appliances,325
+28,Transportation eqpmt,343
+29,Furniture & related prod,368
+30,Miscellaneous mfg,379
+31,Wholesale Trade,395
+32,Motor veh & parts dealers,396
+33,Furniture & home furnishings,397
+34,Electronics & appliances stores,398
+35,Bldg materials & garden dealers,399
+36,food & beverage stores,400
+37,Health & personal care stores,401
+38,Gasoline stations,402
+39,Clothing & accessories stores,403
+40,Sports- hobby- book & music stores,404
+41,General merch stores,405
+42,Misc retailers,406
+43,Non-store retailers,407
+44,Air transportation,408
+45,Rail Transportation,409
+46,Water transportation,410
+47,Truck transportation,411
+48,Transit & ground passengers,412
+49,Pipeline transportation,413
+50,Sightseeing transportation,414
+51,Couriers & messengers,415
+52,Warehousing & storage,416
+53,Publishing industries,417
+54,Motion picture & sound recording,423
+55,Broadcasting,425
+56,Internet publishing and broadcasting,427
+57,Telecommunications,430
+58,Internet & data process svcs,431
+59,Other information services,432
+60,Monetary authorities,433
+61,Credit inmediation & related,434
+62,Securities & other financial,435
+63,Insurance carriers & related,437
+64,Funds- trusts & other finan,439
+65,Real estate,440
+66,Rental & leasing svcs,442
+67,Lessor of nonfinance intang assets,446
+68,Professional- scientific & tech svcs,447
+69,Management of companies,461
+70,Admin support svcs,462
+71,Waste mgmt & remediation svcs,471
+72,Educational svcs,472
+73,Ambulatory health care,475
+74,Hospitals,482
+75,Nursing & residential care,483
+76,Social assistance,485
+77,Performing arts & spectator sports,488
+78,Museums & similar,493
+79,Amusement- gambling & recreation,494
+80,Accommodations,499
+81,Food svcs & drinking places,501
+82,Repair & maintenance,504
+83,Personal & laundry svcs,509
+84,Religious- grantmaking- & similar orgs,513
+85,Private households,517
+86,Government & non NAICs,518
